@@ -2,18 +2,21 @@ resources:
     - name: repo
       type: git
       source:
-        uri: https://github.com/jvanbuel/concourse-playground.git
+        uri: ((git-repo))
     
     - name: test-image
       type: registry-image
       source:
-        repository: jvanbuel/test
+        repository: ((docker-repo))
+        username: ((docker-user))
+        password: ((docker-password))
     
 jobs:
     - name: build-and-push
       plan:
       # fetch repository source (containing Dockerfile)
       - get: repo
+        trigger: true
       # build using `oci-build` task
       - task: build
         privileged: true
@@ -23,6 +26,8 @@ jobs:
             type: registry-image
             source:
               repository: vito/oci-build-task
+          params:
+            DOCKERFILE: docker/Dockerfile
     
           inputs:
           - name: repo
