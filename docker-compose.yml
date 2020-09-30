@@ -10,7 +10,7 @@ services:
       PGDATA: /database
 
   concourse:
-    image: concourse/concourse
+    image: concourse/concourse:ubuntu # Use ubuntu version due to bug https://github.com/concourse/concourse/issues/6038
     command: quickstart
     privileged: true
     depends_on: [concourse-db]

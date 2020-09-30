@@ -20,6 +20,6 @@ clean: login
 create: login
 	fly --target $(TARGET) set-pipeline \
 	--pipeline $(NAME) \
-	--config $(CONF)
-	fly --target $(TARGET) unpause-pipeline
-	-- pipeline $(NAME)
+	--config $(CONF) -n 
+	fly --target $(TARGET) unpause-pipeline \
+	--pipeline $(NAME)

@@ -1,0 +1,39 @@
+resources:
+    - name: repo
+      type: git
+      source:
+        uri: https://github.com/jvanbuel/concourse-playground.git
+    
+    - name: test-image
+      type: registry-image
+      source:
+        repository: jvanbuel/test
+    
+jobs:
+    - name: build-and-push
+      plan:
+      # fetch repository source (containing Dockerfile)
+      - get: repo
+      # build using `oci-build` task
+      - task: build
+        privileged: true
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: vito/oci-build-task
+    
+          inputs:
+          - name: repo
+            path: .
+    
+          outputs:
+          - name: image
+    
+          run:
+            path: build
+    
+      # push using `registry-image` resource
+      - put: test-image
+        params: {image: image/image.tar}
