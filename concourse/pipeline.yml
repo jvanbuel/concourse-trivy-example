@@ -38,7 +38,22 @@ jobs:
     
           run:
             path: build
-    
+      - task: scan
+        config:
+          platform: linux
+          image_resource:
+              type: registry-image
+              source:
+                  repository: aquasec/trivy
+          inputs:
+          - name: image
+            path: .
+
+          run: 
+            path: trivy
+            args: ["image", "--input", "image.tar"]
+
+            
       # push using `registry-image` resource
       - put: test-image
         params: {image: image/image.tar}
